@@ -1,0 +1,4 @@
+<*.{ml,mli}>: package(ctypes.stubs), package(unix-errno.unix)
+<*.{ml,mli}>: package(unix-type-representations)
+<osx_xattr_stubs.c>: use_ctypes, use_osx_xattr_util
+<*.{cma,cmxa}>: use_osx_xattr_stubs

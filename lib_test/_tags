@@ -1,0 +1,2 @@
+<*.*>: package(alcotest), package(ctypes.stubs), use_osx_xattr_stubs
+<*.*>: package(unix-errno.unix), package(unix-type-representations)
