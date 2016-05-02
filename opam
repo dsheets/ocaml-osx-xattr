@@ -19,7 +19,7 @@ depends: [
   "ocamlbuild" {build}
   "alcotest" {test}
   "ctypes" {>= "0.4.0"}
-  "unix-errno"
+  "unix-errno" {>= "0.4.0"}
   "base-unix"
   "unix-type-representations"
 ]

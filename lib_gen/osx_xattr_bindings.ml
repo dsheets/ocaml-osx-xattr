@@ -110,12 +110,12 @@ module C(F: Cstubs.FOREIGN) = struct
 
   let set = F.foreign "osx_xattr_set" (
     string @-> string @-> ocaml_string @-> size_t @-> uint32_t @->
-    SetOptions.t @-> returning PosixTypes.ssize_t
+    SetOptions.t @-> returning int
   )
 
   let fset = F.foreign "osx_xattr_fset" (
     int @-> string @-> ocaml_string @-> size_t @-> uint32_t @->
-    SetOptions.t @-> returning PosixTypes.ssize_t
+    SetOptions.t @-> returning int
   )
 
   let remove = F.foreign "osx_xattr_remove" (
