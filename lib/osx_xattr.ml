@@ -35,9 +35,7 @@ let get_size ?(no_follow=false) ?(show_compression=false) path name =
     then None
     else raise exn
 
-(* TODO: provide a supplied-buffer+offset version? *)
-
-let get ?(no_follow=false) ?(show_compression=false) path name =
+let get ?(size=64) ?(no_follow=false) ?(show_compression=false) path name =
   let rec call count =
     let buf = allocate_n char ~count in
     try Errno_unix.raise_on_errno ~call:"getxattr" ~label:name (fun () ->
@@ -56,7 +54,7 @@ let get ?(no_follow=false) ?(show_compression=false) path name =
       then None
       else raise exn
   in
-  call 256
+  call size
 
 let fget_size ?(no_follow=false) ?(show_compression=false) fd name =
   try Errno_unix.raise_on_errno ~call:"fgetxattr" ~label:name (fun () ->
@@ -71,9 +69,7 @@ let fget_size ?(no_follow=false) ?(show_compression=false) fd name =
     then None
     else raise exn
 
-(* TODO: provide a supplied-buffer+offset version? *)
-
-let fget ?(no_follow=false) ?(show_compression=false) fd name =
+let fget ?(size=64) ?(no_follow=false) ?(show_compression=false) fd name =
   let rec call count =
     let buf = allocate_n char ~count in
     try Errno_unix.raise_on_errno ~call:"fgetxattr" ~label:name (fun () ->
@@ -93,7 +89,7 @@ let fget ?(no_follow=false) ?(show_compression=false) fd name =
       then None
       else raise exn
   in
-  call 256
+  call size
 
 let rec list_of_strings_buffer acc buf = function
   | 0 -> List.rev acc
@@ -113,9 +109,7 @@ let list_size ?(no_follow=false) ?(show_compression=false) path =
     if size < 0 then None else Some size
   )
 
-(* TODO: provide a supplied-buffer+offset version? *)
-
-let list ?(no_follow=false) ?(show_compression=false) path =
+let list ?(size=64) ?(no_follow=false) ?(show_compression=false) path =
   let rec call count =
     let buf = allocate_n char ~count in
     try Errno_unix.raise_on_errno ~call:"listxattr" ~label:path (fun () ->
@@ -132,7 +126,7 @@ let list ?(no_follow=false) ?(show_compression=false) path =
         | size -> call size
       else raise exn
   in
-  call 256
+  call size
 
 let flist_size ?(no_follow=false) ?(show_compression=false) fd =
   let fd = int_of_fd fd in
@@ -145,9 +139,7 @@ let flist_size ?(no_follow=false) ?(show_compression=false) fd =
     if size < 0 then None else Some size
   )
 
-(* TODO: provide a supplied-buffer+offset version? *)
-
-let flist ?(no_follow=false) ?(show_compression=false) fd =
+let flist ?(size=64) ?(no_follow=false) ?(show_compression=false) fd =
   let rec call count =
     let buf = allocate_n char ~count in
     try
@@ -168,7 +160,7 @@ let flist ?(no_follow=false) ?(show_compression=false) fd =
         | size -> call size
       else raise exn
   in
-  call 256
+  call size
 
 let set ?(no_follow=false) ?(create=false) ?(replace=false) path name value =
   let size = Unsigned.Size_t.of_int (String.length value) in

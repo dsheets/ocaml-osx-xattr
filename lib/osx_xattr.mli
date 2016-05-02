@@ -20,7 +20,7 @@ val get_size :
   string -> string -> int option
 
 val get :
-  ?no_follow:bool -> ?show_compression:bool ->
+  ?size:int -> ?no_follow:bool -> ?show_compression:bool ->
   string -> string -> string option
 
 val fget_size :
@@ -28,7 +28,7 @@ val fget_size :
   Unix.file_descr -> string -> int option
 
 val fget :
-  ?no_follow:bool -> ?show_compression:bool ->
+  ?size:int -> ?no_follow:bool -> ?show_compression:bool ->
   Unix.file_descr -> string -> string option
 
 val list_size :
@@ -36,7 +36,7 @@ val list_size :
   string -> int
 
 val list :
-  ?no_follow:bool -> ?show_compression:bool ->
+  ?size:int -> ?no_follow:bool -> ?show_compression:bool ->
   string -> string list
 
 val flist_size :
@@ -44,7 +44,7 @@ val flist_size :
   Unix.file_descr -> int
 
 val flist :
-  ?no_follow:bool -> ?show_compression:bool ->
+  ?size:int -> ?no_follow:bool -> ?show_compression:bool ->
   Unix.file_descr -> string list
 
 val set :
