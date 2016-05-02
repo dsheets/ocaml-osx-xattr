@@ -13,6 +13,9 @@ build: [
 install: [
   [make "install"]
 ]
+build-test: [
+  [make "test"]
+]
 remove: [make "uninstall"]
 depends: [
   "ocamlfind" {build}
