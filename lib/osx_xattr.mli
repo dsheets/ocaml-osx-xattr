@@ -16,19 +16,17 @@
  *)
 
 val get_size :
-  ?no_follow:bool -> ?show_compression:bool ->
-  string -> string -> int option
+  ?no_follow:bool -> ?show_compression:bool -> string -> string -> int option
 
 val get :
-  ?size:int -> ?no_follow:bool -> ?show_compression:bool ->
+  ?no_follow:bool -> ?show_compression:bool -> ?size:int ->
   string -> string -> string option
 
 val fget_size :
-  ?no_follow:bool -> ?show_compression:bool ->
-  Unix.file_descr -> string -> int option
+  ?show_compression:bool -> Unix.file_descr -> string -> int option
 
 val fget :
-  ?size:int -> ?no_follow:bool -> ?show_compression:bool ->
+  ?show_compression:bool -> ?size:int ->
   Unix.file_descr -> string -> string option
 
 val list_size :
@@ -36,29 +34,23 @@ val list_size :
   string -> int
 
 val list :
-  ?size:int -> ?no_follow:bool -> ?show_compression:bool ->
+  ?no_follow:bool -> ?show_compression:bool -> ?size:int ->
   string -> string list
 
-val flist_size :
-  ?no_follow:bool -> ?show_compression:bool ->
-  Unix.file_descr -> int
+val flist_size : ?show_compression:bool -> Unix.file_descr -> int
 
 val flist :
-  ?size:int -> ?no_follow:bool -> ?show_compression:bool ->
-  Unix.file_descr -> string list
+  ?show_compression:bool -> ?size:int -> Unix.file_descr -> string list
 
 val set :
   ?no_follow:bool -> ?create:bool -> ?replace:bool ->
   string -> string -> string -> unit
 
 val fset :
-  ?no_follow:bool -> ?create:bool -> ?replace:bool ->
-  Unix.file_descr -> string -> string -> unit
+  ?create:bool -> ?replace:bool -> Unix.file_descr -> string -> string -> unit
 
 val remove :
   ?no_follow:bool -> ?show_compression:bool ->
   string -> string -> unit
 
-val fremove :
-  ?no_follow:bool -> ?show_compression:bool ->
-  Unix.file_descr -> string -> unit
+val fremove : ?show_compression:bool -> Unix.file_descr -> string -> unit
