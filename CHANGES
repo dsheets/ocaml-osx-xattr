@@ -1,2 +1,6 @@
+0.2.0 (2016-05-05):
+* Remove ?no_follow argument from f* functions as it always errors EINVAL
+* Move ?size argument on get, fget, list, and flist to end of optionals
+
 0.1.0 (2016-05-02):
 * Initial public release
