@@ -7,6 +7,7 @@ homepage: "https://github.com/dsheets/ocaml-osx-xattr"
 bug-reports: "https://github.com/dsheets/ocaml-osx-xattr/issues"
 dev-repo: "https://github.com/dsheets/ocaml-osx-xattr.git"
 license: "ISC"
+tags: [ "osx" "xattr" "extended attributes" "file system"]
 build: [
   [make "build"]
 ]
