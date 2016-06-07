@@ -14,3 +14,28 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
  *)
+
+open Ctypes
+
+module Types = Osx_xattr_types.C(Osx_xattr_types_detected)
+module Generated = Osx_xattr_lwt_generated
+module C = Osx_xattr_bindings.C(Generated)
+
+open Lwt.Infix
+
+let int_of_fd = Unix_representations.int_of_file_descr
+let errno_of_code code = Errno.of_code ~host:Errno_unix.host code
+
+let get_size ?(no_follow=false) ?(show_compression=false) path name =
+  let call =
+    C.get path name null (Unsigned.Size_t.of_int 0)
+      Unsigned.UInt32.zero { C.GetOptions.no_follow; show_compression }
+  in
+  call.Generated.lwt >>= fun (size, errno) ->
+  let size = Int64.to_int (PosixTypes.Ssize.to_int64 size) in
+  if size >= 0 then Lwt.return_some size else
+    let errnos = errno_of_code errno in
+    if List.mem Errno.ENOATTR errnos then Lwt.return_none
+    else raise (Errno.Error {
+        Errno.errno = errnos; call = "getxattr"; label = name;
+      })

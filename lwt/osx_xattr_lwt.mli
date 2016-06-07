@@ -14,3 +14,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
  *)
+
+val get_size :
+  ?no_follow:bool -> ?show_compression:bool -> string -> string -> int option Lwt.t

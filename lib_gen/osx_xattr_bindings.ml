@@ -109,12 +109,12 @@ module C(F: Cstubs.FOREIGN) = struct
   ))
 
   let set = F.(foreign "setxattr" (
-    string @-> string @-> ocaml_string @-> size_t @-> uint32_t @->
+    string @-> string @-> string @-> size_t @-> uint32_t @->
     SetOptions.t @-> returning int
   ))
 
   let fset = F.(foreign "fsetxattr" (
-    int @-> string @-> ocaml_string @-> size_t @-> uint32_t @->
+    int @-> string @-> string @-> size_t @-> uint32_t @->
     SetOptions.t @-> returning int
   ))
 

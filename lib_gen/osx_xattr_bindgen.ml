@@ -15,11 +15,6 @@
  *
  *)
 
-let headers = "\
-#include <sys/xattr.h>\n\
-#include \"osx_xattr_util.h\"\n\
-"
-
 let prefix = "osx_xattr_"
 
 module Prefixed_bindings(F: Cstubs.FOREIGN) =
@@ -42,14 +37,16 @@ type configuration = {
 let standard_configuration = {
   errno = Cstubs.ignore_errno;
   concurrency = Cstubs.sequential;
-  headers;
+  headers = "#include <sys/xattr.h>\n\
+#include \"osx_xattr_util.h\"\n\
+";
   bindings = (module Prefixed_bindings)
 }
 
 let lwt_configuration = {
   errno = Cstubs.return_errno;
   concurrency = Cstubs.lwt_jobs;
-  headers;
+  headers = "#include <sys/xattr.h>\n";
   bindings = (module Osx_xattr_bindings.C)
 }
 
