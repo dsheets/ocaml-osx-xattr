@@ -88,41 +88,41 @@ module C(F: Cstubs.FOREIGN) = struct
 
   end
 
-  let get = F.foreign "osx_xattr_get" (
+  let get = F.(foreign "osx_xattr_get" (
     string @-> string @-> ptr void @-> size_t @-> uint32_t @->
     GetOptions.t @-> returning PosixTypes.ssize_t
-  )
+  ))
 
-  let fget = F.foreign "osx_xattr_fget" (
+  let fget = F.(foreign "osx_xattr_fget" (
     int @-> string @-> ptr void @-> size_t @-> uint32_t @->
     GetOptions.t @-> returning PosixTypes.ssize_t
-  )
+  ))
 
-  let list = F.foreign "osx_xattr_list" (
+  let list = F.(foreign "osx_xattr_list" (
     string @-> ptr void @-> size_t @-> GetOptions.t @->
     returning PosixTypes.ssize_t
-  )
+  ))
 
-  let flist = F.foreign "osx_xattr_flist" (
+  let flist = F.(foreign "osx_xattr_flist" (
     int @-> ptr void @-> size_t @-> GetOptions.t @->
     returning PosixTypes.ssize_t
-  )
+  ))
 
-  let set = F.foreign "osx_xattr_set" (
+  let set = F.(foreign "osx_xattr_set" (
     string @-> string @-> ocaml_string @-> size_t @-> uint32_t @->
     SetOptions.t @-> returning int
-  )
+  ))
 
-  let fset = F.foreign "osx_xattr_fset" (
+  let fset = F.(foreign "osx_xattr_fset" (
     int @-> string @-> ocaml_string @-> size_t @-> uint32_t @->
     SetOptions.t @-> returning int
-  )
+  ))
 
-  let remove = F.foreign "osx_xattr_remove" (
+  let remove = F.(foreign "osx_xattr_remove" (
     string @-> string @-> GetOptions.t @-> returning int
-  )
+  ))
 
-  let fremove = F.foreign "osx_xattr_fremove" (
+  let fremove = F.(foreign "osx_xattr_fremove" (
     int @-> string @-> GetOptions.t @-> returning int
-  )
+  ))
 end
