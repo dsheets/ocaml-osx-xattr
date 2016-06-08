@@ -45,3 +45,6 @@ val flist :
 val set :
   ?no_follow:bool -> ?create:bool -> ?replace:bool ->
   string -> string -> string -> unit Lwt.t
+
+val fset :
+  ?create:bool -> ?replace:bool -> Unix.file_descr -> string -> string -> unit Lwt.t

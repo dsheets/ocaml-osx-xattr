@@ -169,3 +169,13 @@ let set ?(no_follow=false) ?(create=false) ?(replace=false) path name value =
       raise (Errno.Error {Errno.errno = errno_of_code errno; call = "setxattr";
                           label = name; })
     else Lwt.return_unit
+
+let fset ?(create=false) ?(replace=false) fd name value =
+  let size = Unsigned.Size_t.of_int (String.length value) in
+  let fd = int_of_fd fd in
+  (C.fset fd name value size Unsigned.UInt32.zero
+     { C.SetOptions.no_follow=false; create; replace }).Generated.lwt >>= fun (rc, errno) ->
+    if rc < 0 then
+      raise (Errno.Error {Errno.errno = errno_of_code errno; call = "fsetxattr";
+                          label = name; })
+    else Lwt.return_unit
