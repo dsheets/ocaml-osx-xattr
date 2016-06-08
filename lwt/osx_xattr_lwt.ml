@@ -179,3 +179,10 @@ let fset ?(create=false) ?(replace=false) fd name value =
       raise (Errno.Error {Errno.errno = errno_of_code errno; call = "fsetxattr";
                           label = name; })
     else Lwt.return_unit
+
+let remove ?(no_follow=false) ?(show_compression=false) path name =
+  (C.remove path name { C.GetOptions.no_follow; show_compression }).Generated.lwt >>= fun (rc, errno) ->
+  if rc < 0 then
+      raise (Errno.Error {Errno.errno = errno_of_code errno; call = "removexattr";
+                          label = name; })
+  else Lwt.return_unit

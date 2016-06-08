@@ -48,3 +48,7 @@ val set :
 
 val fset :
   ?create:bool -> ?replace:bool -> Unix.file_descr -> string -> string -> unit Lwt.t
+
+val remove :
+  ?no_follow:bool -> ?show_compression:bool ->
+  string -> string -> unit Lwt.t
