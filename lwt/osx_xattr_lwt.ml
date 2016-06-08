@@ -113,3 +113,20 @@ let list_size ?(no_follow=false) ?(show_compression=false) path =
       Errno.errno = errno_of_code errno; call = "listxattr"; label = path;
     })
   else Lwt.return size
+
+let list ?(no_follow=false) ?(show_compression=false) ?(size=64) path =
+  let rec call count =
+    let buf = allocate_n char ~count in
+    (C.list path (to_voidp buf) (Unsigned.Size_t.of_int count)
+       { C.GetOptions.no_follow; show_compression }).Generated.lwt >>= fun (read, errno) ->
+    let read = Int64.to_int (PosixTypes.Ssize.to_int64 read) in
+    if read < 0 then 
+      let errnos = errno_of_code errno in
+      if List.mem Errno.ERANGE errnos
+      then list_size ~no_follow ~show_compression path >>= function
+        | 0 -> Lwt.return []
+        | size -> call size
+      else raise (Errno.Error {Errno.errno = errnos; call = "flistxattr"; label = path; })
+    else Lwt.return (list_of_strings_buffer [] buf read)
+  in
+  call size

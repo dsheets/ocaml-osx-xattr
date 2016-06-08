@@ -32,3 +32,7 @@ val fget :
 val list_size :
   ?no_follow:bool -> ?show_compression:bool ->
   string -> int Lwt.t
+
+val list :
+  ?no_follow:bool -> ?show_compression:bool -> ?size:int ->
+  string -> string list Lwt.t
