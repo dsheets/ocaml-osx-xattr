@@ -24,3 +24,7 @@ val get :
 
 val fget_size :
   ?show_compression:bool -> Unix.file_descr -> string -> int option Lwt.t
+
+val fget :
+  ?show_compression:bool -> ?size:int ->
+  Unix.file_descr -> string -> string option Lwt.t

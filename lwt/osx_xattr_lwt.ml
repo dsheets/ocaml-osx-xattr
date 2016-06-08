@@ -73,3 +73,25 @@ let fget_size ?(show_compression=false) fd name =
   let size = Int64.to_int (PosixTypes.Ssize.to_int64 size) in
   if size >= 0 then Lwt.return_some size
   else handle_errno ~call:"fgetxattr" ~label:name errno None
+
+let fget ?(show_compression=false) ?(size=64) fd name =
+  let rec call count =
+    let buf = allocate_n char ~count in
+    (C.fget (int_of_fd fd) name (to_voidp buf)
+       (Unsigned.Size_t.of_int count)
+       Unsigned.UInt32.zero
+       { C.GetOptions.no_follow=false; show_compression }).Generated.lwt >>= fun (read, errno) ->
+    let read = Int64.to_int (PosixTypes.Ssize.to_int64 read) in
+    if read < 0 then
+      let errnos = errno_of_code errno in
+      if List.mem Errno.ERANGE errnos
+      then fget_size ~show_compression fd name >>= function
+        | Some size -> call size
+        | None -> Lwt.return_none
+      else if List.mem Errno.ENOATTR errnos then Lwt.return_none
+      else raise (Errno.Error {
+      Errno.errno = errnos; call = "getxattr"; label = name;
+        })
+    else Lwt.return_some (string_from_ptr buf ~length:read)
+  in
+  call size
