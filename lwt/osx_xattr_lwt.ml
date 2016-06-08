@@ -140,3 +140,23 @@ let flist_size ?(show_compression=false) fd =
   if size < 0
   then raise (Errno.Error {Errno.errno = errno_of_code errno; call = "flistxattr"; label; })
   else Lwt.return size
+
+let flist ?(show_compression=false) ?(size=64) fd =
+  let rec call count =
+    let buf = allocate_n char ~count in
+    let fd' = int_of_fd fd in
+    let label = string_of_int fd' in
+    (C.flist fd' (to_voidp buf)
+       (Unsigned.Size_t.of_int count)
+       { C.GetOptions.no_follow=false; show_compression }).Generated.lwt >>= fun (read, errno) ->
+    let read = Int64.to_int (PosixTypes.Ssize.to_int64 read) in
+    if read < 0 then
+      let errnos = errno_of_code errno in
+      if List.mem Errno.ERANGE errnos
+      then flist_size ~show_compression fd >>= function
+        | 0 -> Lwt.return []
+        | size -> call size
+      else raise (Errno.Error {Errno.errno = errno_of_code errno; call = "flistxattr"; label; })
+    else Lwt.return (list_of_strings_buffer [] buf read)
+  in
+  call size
