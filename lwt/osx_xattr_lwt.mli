@@ -41,3 +41,7 @@ val flist_size : ?show_compression:bool -> Unix.file_descr -> int Lwt.t
 
 val flist :
   ?show_compression:bool -> ?size:int -> Unix.file_descr -> string list Lwt.t
+
+val set :
+  ?no_follow:bool -> ?create:bool -> ?replace:bool ->
+  string -> string -> string -> unit Lwt.t

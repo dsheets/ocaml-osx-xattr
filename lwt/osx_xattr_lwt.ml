@@ -160,3 +160,12 @@ let flist ?(show_compression=false) ?(size=64) fd =
     else Lwt.return (list_of_strings_buffer [] buf read)
   in
   call size
+
+let set ?(no_follow=false) ?(create=false) ?(replace=false) path name value =
+  let size = Unsigned.Size_t.of_int (String.length value) in
+  (C.set path name value size Unsigned.UInt32.zero
+     { C.SetOptions.no_follow; create; replace }).Generated.lwt >>= fun (rc, errno) ->
+    if rc < 0 then
+      raise (Errno.Error {Errno.errno = errno_of_code errno; call = "setxattr";
+                          label = name; })
+    else Lwt.return_unit
