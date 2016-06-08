@@ -63,3 +63,13 @@ let get ?(no_follow=false) ?(show_compression=false) ?(size=64) path name =
     else Lwt.return_some (string_from_ptr buf ~length:read)
   in
   call size
+
+let fget_size ?(show_compression=false) fd name =
+  let call =
+    C.fget (int_of_fd fd) name null (Unsigned.Size_t.of_int 0)
+      Unsigned.UInt32.zero { C.GetOptions.no_follow=false; show_compression }
+  in
+  call.Generated.lwt >>= fun (size, errno) ->
+  let size = Int64.to_int (PosixTypes.Ssize.to_int64 size) in
+  if size >= 0 then Lwt.return_some size
+  else handle_errno ~call:"fgetxattr" ~label:name errno None
