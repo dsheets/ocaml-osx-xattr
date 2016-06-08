@@ -186,3 +186,12 @@ let remove ?(no_follow=false) ?(show_compression=false) path name =
       raise (Errno.Error {Errno.errno = errno_of_code errno; call = "removexattr";
                           label = name; })
   else Lwt.return_unit
+
+let fremove ?(show_compression=false) fd name =
+  let fd = int_of_fd fd in
+  (C.fremove fd name
+     { C.GetOptions.no_follow=false; show_compression }).Generated.lwt >>= fun (rc, errno) ->
+  if rc < 0 then
+      raise (Errno.Error {Errno.errno = errno_of_code errno; call = "fremovexattr";
+                          label = name; })
+  else Lwt.return_unit

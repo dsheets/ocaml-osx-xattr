@@ -52,3 +52,5 @@ val fset :
 val remove :
   ?no_follow:bool -> ?show_compression:bool ->
   string -> string -> unit Lwt.t
+
+val fremove : ?show_compression:bool -> Unix.file_descr -> string -> unit Lwt.t
