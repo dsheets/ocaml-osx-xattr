@@ -2,6 +2,7 @@ open Ocamlbuild_plugin;;
 open Ocamlbuild_pack;;
 
 let ctypes_libdir = Sys.getenv "CTYPES_LIB_DIR" in
+let lwt_libdir = Sys.getenv "LWT_LIB_DIR" in
 let ocaml_libdir = Sys.getenv "OCAML_LIB_DIR" in
 
 dispatch begin
@@ -42,7 +43,22 @@ dispatch begin
       ~prods:["lib/%_stubs.c"; "lib/%_generated.ml"]
       ~deps: ["lib_gen/%_bindgen.byte"]
       (fun env build ->
-        Cmd (A(env "lib_gen/%_bindgen.byte")));
+        Cmd (S[A(env "lib_gen/%_bindgen.byte");
+               A"--c-file";
+               A(env "lib/%_stubs.c");
+                 A"--ml-file";
+               A(env "lib/%_generated.ml")]));
+
+    rule "cstubs: lwt/x_bindings.ml -> x_stubs.c, x_generated.ml"
+      ~prods:["lwt/%_lwt_stubs.c"; "lwt/%_lwt_generated.ml"]
+      ~deps: ["lib_gen/%_bindgen.byte"]
+      (fun env build ->
+        Cmd (S[A(env "lib_gen/%_bindgen.byte");
+               A"--lwt-bindings";
+               A"--c-file";
+               A(env "lwt/%_lwt_stubs.c");
+                 A"--ml-file";
+               A(env "lwt/%_lwt_generated.ml")]));
 
     copy_rule "cstubs: lib_gen/x_bindings.ml -> lib/x_bindings.ml"
       "lib_gen/%_bindings.ml" "lib/%_bindings.ml";
@@ -51,12 +67,14 @@ dispatch begin
     flag ["c"; "ocamlmklib"] & S[A"-L/usr/local/lib"];
     flag ["ocaml"; "link"; "native"; "program"] &
       S[A"-cclib"; A"-L/usr/local/lib";
-        A"-cclib"; A("-L"^Unix.getcwd()^"/_build/lib")];
+        A"-cclib"; A("-L"^Unix.getcwd()^"/_build/lib");
+        A"-cclib"; A("-L"^Unix.getcwd()^"/_build/lwt")];
 
     (* Linking cstubs *)
     dep ["c"; "compile"; "use_osx_xattr_util"]
       ["lib/osx_xattr_util.o"; "lib/osx_xattr_util.h"];
     flag ["c"; "compile"; "use_ctypes"] & S[A"-I"; A ctypes_libdir];
+    flag ["c"; "compile"; "use_lwt"] & S[A"-I"; A lwt_libdir];
     flag ["c"; "compile"; "debug"] & A"-g";
 
     (* Linking generated stubs *)
@@ -70,6 +88,17 @@ dispatch begin
     flag ["ocaml"; "link"; "native"; "library"; "use_osx_xattr_stubs"] &
     S[A"-cclib"; A"-losx_xattr_stubs"];
 
+    (* Linking generated lwt stubs *)
+    dep ["ocaml"; "link"; "byte"; "library"; "use_osx_xattr_lwt_stubs"]
+      ["lwt/dllosx_xattr_lwt_stubs"-.-(!Options.ext_dll)];
+    flag ["ocaml"; "link"; "byte"; "library"; "use_osx_xattr_lwt_stubs"] &
+    S[A"-dllib"; A"-losx_xattr_lwt_stubs"];
+
+    dep ["ocaml"; "link"; "native"; "library"; "use_osx_xattr_lwt_stubs"]
+      ["lwt/libosx_xattr_lwt_stubs"-.-(!Options.ext_lib)];
+    flag ["ocaml"; "link"; "native"; "library"; "use_osx_xattr_lwt_stubs"] &
+    S[A"-cclib"; A"-losx_xattr_lwt_stubs"];
+
     (* Linking tests *)
     flag ["ocaml"; "link"; "byte"; "program"; "use_osx_xattr_stubs"] &
       S[A"-dllib"; A"-losx_xattr_stubs"];
@@ -80,6 +109,18 @@ dispatch begin
       S[A"-cclib"; A"-losx_xattr_stubs"];
     dep ["ocaml"; "link"; "native"; "program"; "use_osx_xattr_stubs"]
       ["lib/libosx_xattr_stubs"-.-(!Options.ext_lib)];
+
+    (* Linking Lwt tests *)
+    flag ["ocaml"; "link"; "byte"; "program"; "use_osx_xattr_lwt_stubs"] &
+      S[A"-dllib"; A"-losx_xattr_lwt_stubs"];
+    dep ["ocaml"; "link"; "byte"; "program"; "use_osx_xattr_lwt_stubs"]
+      ["lwt/dllosx_xattr_lwt_stubs"-.-(!Options.ext_dll)];
+
+    flag ["ocaml"; "link"; "native"; "program"; "use_osx_xattr_lwt_stubs"] &
+      S[A"-cclib"; A"-losx_xattr_lwt_stubs"];
+    dep ["ocaml"; "link"; "native"; "program"; "use_osx_xattr_lwt_stubs"]
+      ["lwt/libosx_xattr_lwt_stubs"-.-(!Options.ext_lib)];
+
 
   | _ -> ()
 end;;

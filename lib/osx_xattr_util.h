@@ -1,24 +1,24 @@
-ssize_t osx_xattr_get
+ssize_t osx_xattr_getxattr
 (const char *path, const char *name, void *value, size_t size,
  u_int32_t position, int options);
 
-ssize_t osx_xattr_fget
+ssize_t osx_xattr_fgetxattr
 (int fd, const char *name, void *value, size_t size, u_int32_t position,
  int options);
 
-ssize_t osx_xattr_list
+ssize_t osx_xattr_listxattr
 (const char *path, char *namebuf, size_t size, int options);
 
-ssize_t osx_xattr_flist(int fd, char *namebuf, size_t size, int options);
+ssize_t osx_xattr_flistxattr(int fd, char *namebuf, size_t size, int options);
 
-int osx_xattr_set
+int osx_xattr_setxattr
 (const char *path, const char *name, void *value, size_t size,
  u_int32_t position, int options);
 
-int osx_xattr_fset
+int osx_xattr_fsetxattr
 (int fd, const char *name, void *value, size_t size, u_int32_t position,
  int options);
 
-int osx_xattr_remove(const char *path, const char *name, int options);
+int osx_xattr_removexattr(const char *path, const char *name, int options);
 
-int osx_xattr_fremove(int fd, const char *name, int options);
+int osx_xattr_fremovexattr(int fd, const char *name, int options);

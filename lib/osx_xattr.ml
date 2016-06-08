@@ -18,7 +18,11 @@
 open Ctypes
 
 module Types = Osx_xattr_types.C(Osx_xattr_types_detected)
-module C = Osx_xattr_bindings.C(Osx_xattr_generated)
+module C = Osx_xattr_bindings.C
+    (struct
+      include Osx_xattr_generated
+      let foreign f = foreign ("osx_xattr_" ^ f)
+    end)
 
 let int_of_fd = Unix_representations.int_of_file_descr
 
@@ -167,7 +171,7 @@ let set ?(no_follow=false) ?(create=false) ?(replace=false) path name value =
   let size = Unsigned.Size_t.of_int (String.length value) in
   Errno_unix.raise_on_errno ~call:"setxattr" ~label:name (fun () ->
     let rc =
-      C.set path name (ocaml_string_start value) size Unsigned.UInt32.zero
+      C.set path name value size Unsigned.UInt32.zero
         { C.SetOptions.no_follow; create; replace }
     in
     if rc < 0 then None else Some ()
@@ -178,7 +182,7 @@ let fset ?(create=false) ?(replace=false) fd name value =
   let fd = int_of_fd fd in
   Errno_unix.raise_on_errno ~call:"fsetxattr" ~label:name (fun () ->
     let rc =
-      C.fset fd name (ocaml_string_start value) size Unsigned.UInt32.zero
+      C.fset fd name value size Unsigned.UInt32.zero
         { C.SetOptions.no_follow=false; create; replace }
     in
     if rc < 0 then None else Some ()

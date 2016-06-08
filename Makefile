@@ -4,10 +4,11 @@ FINDLIB_NAME=osx-xattr
 MOD_NAME=osx_xattr
 
 OCAML_LIB_DIR=$(shell ocamlc -where)
-
+LWT_LIB_DIR=$(shell ocamlfind query lwt)
 CTYPES_LIB_DIR=$(shell ocamlfind query ctypes)
 
 OCAMLBUILD=CTYPES_LIB_DIR=$(CTYPES_LIB_DIR) OCAML_LIB_DIR=$(OCAML_LIB_DIR) \
+           LWT_LIB_DIR=$(LWT_LIB_DIR)       \
 	ocamlbuild -use-ocamlfind -classic-display
 
 WITH_LWT=$(shell ocamlfind query threads lwt > /dev/null 2>&1 ; echo $$?)
@@ -48,7 +49,9 @@ build:
 
 test: build
 	$(OCAMLBUILD) lib_test/test.native
+	$(OCAMLBUILD) lwt_test/test_lwt.native
 	./test.native
+	./test_lwt.native
 
 install:
 	ocamlfind install $(FINDLIB_NAME) META \

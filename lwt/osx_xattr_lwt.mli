@@ -14,3 +14,43 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
  *)
+
+val get_size :
+  ?no_follow:bool -> ?show_compression:bool -> string -> string -> int option Lwt.t
+
+val get :
+  ?no_follow:bool -> ?show_compression:bool -> ?size:int ->
+  string -> string -> string option Lwt.t
+
+val fget_size :
+  ?show_compression:bool -> Unix.file_descr -> string -> int option Lwt.t
+
+val fget :
+  ?show_compression:bool -> ?size:int ->
+  Unix.file_descr -> string -> string option Lwt.t
+
+val list_size :
+  ?no_follow:bool -> ?show_compression:bool ->
+  string -> int Lwt.t
+
+val list :
+  ?no_follow:bool -> ?show_compression:bool -> ?size:int ->
+  string -> string list Lwt.t
+
+val flist_size : ?show_compression:bool -> Unix.file_descr -> int Lwt.t
+
+val flist :
+  ?show_compression:bool -> ?size:int -> Unix.file_descr -> string list Lwt.t
+
+val set :
+  ?no_follow:bool -> ?create:bool -> ?replace:bool ->
+  string -> string -> string -> unit Lwt.t
+
+val fset :
+  ?create:bool -> ?replace:bool -> Unix.file_descr -> string -> string -> unit Lwt.t
+
+val remove :
+  ?no_follow:bool -> ?show_compression:bool ->
+  string -> string -> unit Lwt.t
+
+val fremove : ?show_compression:bool -> Unix.file_descr -> string -> unit Lwt.t
