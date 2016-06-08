@@ -95,3 +95,21 @@ let fget ?(show_compression=false) ?(size=64) fd name =
     else Lwt.return_some (string_from_ptr buf ~length:read)
   in
   call size
+
+let rec list_of_strings_buffer acc buf = function
+  | 0 -> List.rev acc
+  | sz when sz < 0 -> assert false
+  | sz ->
+    let next = coerce (ptr char) string buf in
+    let len = String.length next in
+    assert (len < sz);
+    list_of_strings_buffer (next::acc) (buf +@ (len + 1)) (sz - len - 1)
+
+let list_size ?(no_follow=false) ?(show_compression=false) path =
+  (C.list path null (Unsigned.Size_t.of_int 0)
+     { C.GetOptions.no_follow; show_compression }).Generated.lwt >>= fun (size, errno) ->
+  let size = Int64.to_int (PosixTypes.Ssize.to_int64 size) in
+  if size < 0 then raise (Errno.Error {
+      Errno.errno = errno_of_code errno; call = "listxattr"; label = path;
+    })
+  else Lwt.return size
