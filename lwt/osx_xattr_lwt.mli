@@ -17,3 +17,7 @@
 
 val get_size :
   ?no_follow:bool -> ?show_compression:bool -> string -> string -> int option Lwt.t
+
+val get :
+  ?no_follow:bool -> ?show_compression:bool -> ?size:int ->
+  string -> string -> string option Lwt.t
