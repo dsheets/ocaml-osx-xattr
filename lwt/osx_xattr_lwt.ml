@@ -130,3 +130,13 @@ let list ?(no_follow=false) ?(show_compression=false) ?(size=64) path =
     else Lwt.return (list_of_strings_buffer [] buf read)
   in
   call size
+
+let flist_size ?(show_compression=false) fd =
+  let fd = int_of_fd fd in
+  let label = string_of_int fd in
+  (C.flist fd null (Unsigned.Size_t.of_int 0)
+     { C.GetOptions.no_follow=false; show_compression }).Generated.lwt >>= fun (size, errno) ->
+  let size = Int64.to_int (PosixTypes.Ssize.to_int64 size) in  
+  if size < 0
+  then raise (Errno.Error {Errno.errno = errno_of_code errno; call = "flistxattr"; label; })
+  else Lwt.return size

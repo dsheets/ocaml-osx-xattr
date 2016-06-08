@@ -36,3 +36,5 @@ val list_size :
 val list :
   ?no_follow:bool -> ?show_compression:bool -> ?size:int ->
   string -> string list Lwt.t
+
+val flist_size : ?show_compression:bool -> Unix.file_descr -> int Lwt.t
