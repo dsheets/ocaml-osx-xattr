@@ -1,0 +1,3 @@
+<*.*>: package(alcotest), package(ctypes.stubs), package(lwt.unix)
+<*.*>: use_osx_xattr_lwt_stubs
+<*.*>: package(unix-errno.unix), package(unix-type-representations)

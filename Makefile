@@ -49,7 +49,9 @@ build:
 
 test: build
 	$(OCAMLBUILD) lib_test/test.native
+	$(OCAMLBUILD) lwt_test/test_lwt.native
 	./test.native
+	./test_lwt.native
 
 install:
 	ocamlfind install $(FINDLIB_NAME) META \
