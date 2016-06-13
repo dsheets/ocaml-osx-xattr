@@ -8,7 +8,7 @@ archive(native, plugin) = "osx_xattr.cmxs"
 exists_if = "osx_xattr.cma"
 
 package "lwt" (
-  requires = "osx-xattr lwt"
+  requires = "osx-xattr lwt.unix"
   archive(byte) = "osx_xattr_lwt.cma"
   archive(byte, plugin) = "osx_xattr_lwt.cma"
   archive(native) = "osx_xattr_lwt.cmxa"

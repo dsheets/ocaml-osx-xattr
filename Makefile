@@ -34,7 +34,9 @@ INSTALL_LWT:=$(addprefix $(MOD_NAME)_lwt,$(TYPES)) \
              $(addprefix $(MOD_NAME)_lwt,$(TARGETS))
 
 INSTALL_LWT:=$(addprefix _build/lwt/,$(INSTALL_LWT))
-
+INSTALL_LWT:=$(INSTALL_LWT) \
+	      -dll _build/lwt/dll$(MOD_NAME)_lwt_stubs.so \
+	      -nodll _build/lwt/lib$(MOD_NAME)_lwt_stubs.a
 INSTALL+=$(INSTALL_LWT)
 endif
 
