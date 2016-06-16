@@ -1,3 +1,6 @@
+0.3.0 (2016-06-16):
+* Add optional Lwt support
+
 0.2.0 (2016-05-05):
 * Remove ?no_follow argument from f* functions as it always errors EINVAL
 * Move ?size argument on get, fget, list, and flist to end of optionals

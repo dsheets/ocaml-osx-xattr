@@ -1,8 +1,8 @@
 opam-version: "1.2"
 name: "osx-xattr"
-version: "0.2.0"
+version: "0.3.0"
 maintainer: "sheets@alum.mit.edu"
-authors: ["David Sheets"]
+authors: ["David Sheets" "Jeremy Yallop"]
 homepage: "https://github.com/dsheets/ocaml-osx-xattr"
 bug-reports: "https://github.com/dsheets/ocaml-osx-xattr/issues"
 dev-repo: "https://github.com/dsheets/ocaml-osx-xattr.git"
