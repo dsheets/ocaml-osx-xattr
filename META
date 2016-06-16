@@ -1,4 +1,4 @@
-version = "0.2.0"
+version = "0.3.0"
 description = "OS X extended attribute system call bindings"
 requires = "ctypes.stubs unix-errno.unix unix-type-representations"
 archive(byte) = "osx_xattr.cma"
